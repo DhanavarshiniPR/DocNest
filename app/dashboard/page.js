@@ -670,15 +670,6 @@ export default function Dashboard() {
         
         {/* Sidebar */}
         <div className={`dashboard-sidebar ${mobileMenuOpen ? 'open' : ''}`}>
-          <div className="dashboard-sidebar-search">
-            <input
-              className="dashboard-search-input"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder="Search in Drive"
-            />
-          </div>
-          
           <nav className="dashboard-nav">
             {categories.map((cat) => (
               <button
@@ -699,6 +690,16 @@ export default function Dashboard() {
 
         {/* Main Content */}
         <div className="dashboard-content">
+          {/* Search Bar - Moved to main content for mobile */}
+          <div className="dashboard-sidebar-search">
+            <input
+              className="dashboard-search-input"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search in Drive"
+            />
+          </div>
+          
           {/* Breadcrumbs */}
           <div className="dashboard-breadcrumbs">
             <button 
