@@ -656,7 +656,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="dashboard-app-row" style={{display: 'flex', flex: 1, minHeight: 0}}>
+      <div className="dashboard-app-row">
         {/* Mobile Menu Overlay */}
         {mobileMenuOpen && (
           <div 
@@ -833,7 +833,7 @@ export default function Dashboard() {
             borderRadius: '12px', 
             border: '1px solid #e0e0e0',
             boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
-            overflow: 'hidden'
+            overflow: 'auto'
           }}>
             {viewMode === 'list' ? (
               <div style={{ padding: '0' }}>

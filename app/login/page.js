@@ -26,7 +26,8 @@ export default function Login() {
       if (res.ok) {
         router.push('/dashboard');
       } else {
-        setError(data.error || 'Login failed');
+        se
+        tError(data.error || 'Login failed');
       }
     } catch (err) {
       setError('Network error');

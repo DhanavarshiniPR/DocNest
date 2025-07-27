@@ -12,6 +12,16 @@ export default function Home() {
         <div className={styles.navLinks}>
           <Link href="/login" className={styles.navButton}>Login</Link>
           <Link href="/register" className={styles.navButton}>Register</Link>
+          <button 
+            onClick={async () => {
+              await fetch('/api/auth/logout', { method: 'POST' });
+              window.location.reload();
+            }}
+            className={styles.navButton}
+            style={{ background: '#dc2626', color: 'white' }}
+          >
+            Clear Session
+          </button>
         </div>
       </nav>
       
