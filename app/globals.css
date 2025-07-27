@@ -117,11 +117,11 @@ a {
   }
 }
 
-.mobileMenuBtn {
+.mobile-menu-btn {
   display: flex;
 }
 @media (min-width: 768px) {
-  .mobileMenuBtn {
+  .mobile-menu-btn {
     display: none !important;
   }
 }
@@ -180,6 +180,7 @@ a {
     transition: left 0.3s ease !important;
     height: calc(100vh - 80px) !important;
     box-shadow: 2px 0 8px rgba(0,0,0,0.10) !important;
+    background: #ffffff !important;
   }
   .dashboard-sidebar.open {
     left: 0 !important;
@@ -188,7 +189,7 @@ a {
     margin-left: 0 !important;
     padding: 16px 8px !important;
   }
-  .mobileMenuBtn {
+  .mobile-menu-btn {
     display: flex !important;
   }
 }
@@ -205,7 +206,7 @@ a {
     margin-left: 300px !important;
     padding: 32px !important;
   }
-  .mobileMenuBtn {
+  .mobile-menu-btn {
     display: none !important;
   }
 }
@@ -484,7 +485,7 @@ a {
 /* Enhanced Print Styles */
 @media print {
   .dashboard-sidebar,
-  .mobileMenuBtn,
+  .mobile-menu-btn,
   .navButton {
     display: none !important;
   }
@@ -575,7 +576,7 @@ a {
   padding: 8px 12px;
   font-weight: 600;
   cursor: pointer;
-  display: flex;
+  display: none;
   align-items: center;
   gap: 4px;
   font-size: 0.9rem;
@@ -1094,7 +1095,7 @@ a {
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 40;
+  z-index: 998;
 }
 
 /* Mobile Responsive Styles */
@@ -1238,6 +1239,17 @@ a {
   
   .dashboard-list-item {
     padding: 8px 10px;
+  }
+  
+  .dashboard-sidebar {
+    width: 90vw !important;
+    max-width: 300px !important;
+  }
+  
+  .mobile-menu-btn {
+    display: flex !important;
+    padding: 6px 10px !important;
+    font-size: 0.8rem !important;
   }
   
   .dashboard-grid-view {
