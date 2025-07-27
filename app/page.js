@@ -2,6 +2,7 @@
 import styles from './page.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
+import ClearSessionButton from './components/ClearSessionButton';
 
 // Disable static generation for this page
 export const dynamic = 'force-dynamic';
@@ -16,16 +17,7 @@ export default function Home() {
         <div className={styles.navLinks}>
           <Link href="/login" className={styles.navButton}>Login</Link>
           <Link href="/register" className={styles.navButton}>Register</Link>
-          <button 
-            onClick={async () => {
-              await fetch('/api/auth/logout', { method: 'POST' });
-              window.location.reload();
-            }}
-            className={styles.navButton}
-            style={{ background: '#dc2626', color: 'white' }}
-          >
-            Clear Session
-          </button>
+          <ClearSessionButton />
         </div>
       </nav>
       
