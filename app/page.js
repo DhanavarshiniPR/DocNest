@@ -2,10 +2,6 @@
 import styles from './page.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
-import ClearSessionButton from './components/ClearSessionButton';
-
-// Disable static generation for this page
-export const dynamic = 'force-dynamic';
 
 export default function Home() {
   return (
@@ -17,7 +13,6 @@ export default function Home() {
         <div className={styles.navLinks}>
           <Link href="/login" className={styles.navButton}>Login</Link>
           <Link href="/register" className={styles.navButton}>Register</Link>
-          <ClearSessionButton />
         </div>
       </nav>
       
