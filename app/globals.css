@@ -1382,10 +1382,48 @@ a {
 @media (max-width: 480px) {
   .dashboard-header {
     padding: 8px 12px;
+    flex-direction: column !important;
+    gap: 12px !important;
   }
   
   .dashboard-welcome-text {
     font-size: 1rem;
+    text-align: center !important;
+    width: 100% !important;
+  }
+  
+  .dashboard-actions {
+    display: flex !important;
+    gap: 8px !important;
+    width: 100% !important;
+    justify-content: space-between !important;
+    flex-wrap: wrap !important;
+  }
+  
+  .mobile-menu-btn,
+  .dashboard-new-btn,
+  .dashboard-logout-btn {
+    min-width: 60px !important;
+    padding: 8px 10px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+    flex: 1 !important;
+    max-width: 80px !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+  }
+  
+  /* Better mobile button text */
+  .mobile-menu-btn::after {
+    content: "Menu" !important;
+  }
+  
+  .dashboard-new-btn::after {
+    content: "New" !important;
+  }
+  
+  .dashboard-logout-btn::after {
+    content: "Logout" !important;
   }
   
   .dashboard-content {
@@ -1594,5 +1632,73 @@ a {
   .dashboard-content {
     margin-left: 0 !important;
     padding: 16px !important;
+  }
+}
+
+/* Additional Mobile Improvements */
+@media (max-width: 480px) {
+  /* Better mobile navigation */
+  .dashboard-nav-item {
+    padding: 16px 20px !important;
+    font-size: 16px !important;
+    min-height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+    text-align: left !important;
+    border-radius: 8px !important;
+    margin-bottom: 4px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  
+  /* Better mobile sidebar spacing */
+  .dashboard-sidebar {
+    padding: 20px 16px !important;
+  }
+  
+  .dashboard-nav {
+    gap: 8px !important;
+  }
+  
+  /* Improve mobile form elements */
+  .dashboard-form {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  
+  .dashboard-input {
+    width: 100% !important;
+    min-height: 44px !important;
+  }
+  
+  .dashboard-btn {
+    width: 100% !important;
+    min-height: 44px !important;
+  }
+  
+  /* Better mobile toolbar */
+  .dashboard-toolbar {
+    flex-direction: column !important;
+    gap: 12px !important;
+    align-items: stretch !important;
+  }
+  
+  .dashboard-toolbar-left,
+  .dashboard-toolbar-right {
+    justify-content: center !important;
+  }
+  
+  /* Better mobile search */
+  .dashboard-sidebar-search {
+    padding: 0 16px 16px 16px !important;
+  }
+  
+  .dashboard-search-input {
+    width: 100% !important;
+    min-height: 44px !important;
+    font-size: 16px !important;
   }
 }
