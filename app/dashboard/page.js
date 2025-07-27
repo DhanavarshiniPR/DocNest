@@ -66,6 +66,11 @@ export default function Dashboard() {
   const [dataLoadMessage, setDataLoadMessage] = useState("");
   const [contextSelectedId, setContextSelectedId] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // Debug mobile menu state
+  useEffect(() => {
+    console.log('Mobile menu state changed to:', mobileMenuOpen);
+  }, [mobileMenuOpen]);
 
   // Load user data on component mount
   useEffect(() => {
@@ -598,7 +603,10 @@ export default function Dashboard() {
           {/* Mobile Menu Button */}
           <button
             className="mobile-menu-btn"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={() => {
+              console.log('Mobile menu clicked, current state:', mobileMenuOpen);
+              setMobileMenuOpen(!mobileMenuOpen);
+            }}
           >
             ☰ Menu
           </button>
@@ -653,7 +661,10 @@ export default function Dashboard() {
         {mobileMenuOpen && (
           <div 
             className="dashboard-mobile-overlay"
-            onClick={() => setMobileMenuOpen(false)}
+            onClick={() => {
+              console.log('Mobile overlay clicked, closing menu');
+              setMobileMenuOpen(false);
+            }}
           />
         )}
         
