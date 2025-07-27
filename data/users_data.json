@@ -1,0 +1,120 @@
+{
+  "Dharshana": {
+    "docs": {
+      "My Drive": [
+        {
+          "id": "fpivk0j1",
+          "name": "new",
+          "type": "folder",
+          "children": [
+            {
+              "id": "4bx8svcj",
+              "name": "Varshini.pptx",
+              "url": "/uploads/1753540850912_Varshini.pptx",
+              "type": "file",
+              "size": 325108,
+              "fileType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+              "uploadDate": "2025-07-26T14:40:50.920Z"
+            }
+          ],
+          "createdDate": "2025-07-26T14:40:40.985Z"
+        }
+      ],
+      "Shared with me": []
+    },
+    "starredItems": [
+      "4bx8svcj",
+      "fpivk0j1"
+    ],
+    "trashItems": [
+      [
+        "arb1uw06",
+        "arb1uw06"
+      ]
+    ],
+    "recentItems": [
+      {
+        "id": "4bx8svcj",
+        "name": "Varshini.pptx",
+        "url": "/uploads/1753540850912_Varshini.pptx",
+        "type": "file",
+        "size": 325108,
+        "fileType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "uploadDate": "2025-07-26T14:40:50.920Z",
+        "lastAccessed": "2025-07-26T14:40:50.920Z"
+      }
+    ]
+  },
+  "Anu": {
+    "docs": {
+      "My Drive": [
+        {
+          "id": "vdo1lld2",
+          "name": "DHANAVARSHINI- PR[1].docx",
+          "url": "/uploads/1753627446087_DHANAVARSHINI- PR[1].docx",
+          "type": "file",
+          "size": 43010,
+          "fileType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "uploadDate": "2025-07-27T14:44:06.092Z"
+        },
+        {
+          "id": "vdo1lld2",
+          "name": "DHANAVARSHINI- PR[1].docx",
+          "url": "/uploads/1753627446087_DHANAVARSHINI- PR[1].docx",
+          "type": "file",
+          "size": 43010,
+          "fileType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "uploadDate": "2025-07-27T14:44:06.092Z"
+        },
+        {
+          "id": "vdo1lld2",
+          "name": "DHANAVARSHINI- PR[1].docx",
+          "url": "/uploads/1753627446087_DHANAVARSHINI- PR[1].docx",
+          "type": "file",
+          "size": 43010,
+          "fileType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "uploadDate": "2025-07-27T14:44:06.092Z"
+        },
+        {
+          "id": "vdo1lld2",
+          "name": "DHANAVARSHINI- PR[1].docx",
+          "url": "/uploads/1753627446087_DHANAVARSHINI- PR[1].docx",
+          "type": "file",
+          "size": 43010,
+          "fileType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "uploadDate": "2025-07-27T14:44:06.092Z"
+        }
+      ],
+      "Shared with me": []
+    },
+    "starredItems": [
+      "vdo1lld2"
+    ],
+    "trashItems": [
+      [
+        "vdo1lld2",
+        {
+          "id": "vdo1lld2",
+          "name": "DHANAVARSHINI- PR[1].docx",
+          "url": "/uploads/1753627446087_DHANAVARSHINI- PR[1].docx",
+          "type": "file",
+          "size": 43010,
+          "fileType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "uploadDate": "2025-07-27T14:44:06.092Z"
+        }
+      ]
+    ],
+    "recentItems": [
+      {
+        "id": "vdo1lld2",
+        "name": "DHANAVARSHINI- PR[1].docx",
+        "url": "/uploads/1753627446087_DHANAVARSHINI- PR[1].docx",
+        "type": "file",
+        "size": 43010,
+        "fileType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "uploadDate": "2025-07-27T14:44:06.092Z",
+        "lastAccessed": "2025-07-27T14:44:19.641Z"
+      }
+    ]
+  }
+}
