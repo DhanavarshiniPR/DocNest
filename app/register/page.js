@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import styles from '../page.module.css';
 
 export default function Register() {
@@ -23,7 +24,7 @@ export default function Register() {
     setLoading(true);
     try {
       // Step 1: Register the user
-      const res = await fetch('/api/auth/register', {
+      const res = await fetch('/api/auth/register-nextauth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
@@ -33,21 +34,28 @@ export default function Register() {
       if (res.ok) {
         console.log('Registration successful:', data);
         
-        // Step 2: Auto-login after register
-        const loginRes = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-        });
-        
-        if (loginRes.ok) {
-          console.log('Auto-login successful');
-          router.push('/dashboard');
-        } else {
-          const loginData = await loginRes.json();
-          console.error('Auto-login failed:', loginData);
-          setError(`Registration succeeded but login failed: ${loginData.error || 'Unknown error'}`);
-        }
+        // Step 2: Auto-login after register using NextAuth
+        // Add a small delay to ensure the user data is properly saved
+        setTimeout(async () => {
+          try {
+            const result = await signIn('credentials', {
+              username,
+              password,
+              redirect: false,
+            });
+            
+            if (result?.error) {
+              console.error('Auto-login failed:', result.error);
+              setError('Registration succeeded but login failed. Please try logging in manually.');
+            } else {
+              console.log('Auto-login successful, redirecting to dashboard');
+              router.push('/dashboard');
+            }
+          } catch (loginError) {
+            console.error('Auto-login error:', loginError);
+            setError('Registration succeeded but login failed. Please try logging in manually.');
+          }
+        }, 500); // 500ms delay
       } else {
         console.error('Registration failed:', data);
         setError(data.error || 'Registration failed');
@@ -100,6 +108,13 @@ export default function Register() {
         <div className={styles['auth-link-container']}>
           Already have an account? <Link href="/login" className={styles['auth-link']}>Login</Link>
         </div>
+        {error && error.includes('login failed') && (
+          <div className={styles['auth-link-container']} style={{ marginTop: '10px' }}>
+            <Link href="/login" className={styles['auth-link']}>
+              Click here to login manually
+            </Link>
+          </div>
+        )}
       </div>
       
       <div className={styles.footer}>

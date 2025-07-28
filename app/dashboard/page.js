@@ -1,5 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import styles from '../page.module.css';
 import Image from 'next/image';
 
@@ -33,6 +35,8 @@ function getFileIcon(fileType) {
 }
 
 export default function Dashboard() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [selected, setSelected] = useState('My Drive');
   const [docs, setDocs] = useState({
     'My Drive': [],
@@ -41,6 +45,16 @@ export default function Dashboard() {
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
   const [username, setUsername] = useState("");
+  
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (status === 'loading') return;
+    if (!session) {
+      router.push('/login');
+    } else {
+      setUsername(session.user.username);
+    }
+  }, [session, status, router]);
   
   // Debug username state changes
   useEffect(() => {
@@ -75,73 +89,48 @@ export default function Dashboard() {
   // Load user data on component mount
   useEffect(() => {
     const loadUserData = async () => {
+      if (!session?.user?.username) return;
+      
       setDataLoading(true);
       try {
-        // Get current user info from server
-        const userRes = await fetch('/api/auth/me');
-        if (userRes.ok) {
-          const userData = await userRes.json();
-          console.log('User data from /api/auth/me:', userData);
-          setUsername(userData.username);
-          console.log('Set username to:', userData.username);
+        console.log('Loading data for user:', session.user.username);
+        setUsername(session.user.username);
+        
+        // Load user's saved data
+        const res = await fetch('/api/data/load', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: session.user.username })
+        });
+        
+        if (res.ok) {
+          const { data } = await res.json();
+          console.log('Loaded user data for', session.user.username, ':', data);
           
-          // Load user's saved data
-          const res = await fetch('/api/data/load', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: userData.username })
-          });
-          
-          if (res.ok) {
-            const { data } = await res.json();
-            console.log('Loaded user data for', userData.username, ':', data);
-            
-            if (data.docs) {
-              setDocs(data.docs);
-              console.log('Loaded docs:', data.docs);
-              
-              // Count total files and folders
-              const totalItems = Object.values(data.docs).reduce((total, category) => {
-                return total + category.length;
-              }, 0);
-              
-              if (totalItems > 0) {
-                setDataLoadMessage(`Loaded ${totalItems} item${totalItems === 1 ? '' : 's'} from your previous session`);
-                setTimeout(() => setDataLoadMessage(""), 3000); // Clear message after 3 seconds
-              }
-            }
-            if (data.starredItems) {
-              setStarredItems(new Set(data.starredItems));
-              console.log('Loaded starred items:', data.starredItems);
-            }
-            if (data.trashItems) {
-              // Defensive: only use new Map if it's an array of [id, item] pairs
-              if (Array.isArray(data.trashItems) && data.trashItems.length && Array.isArray(data.trashItems[0]) && data.trashItems[0].length === 2) {
-                setTrashItems(new Map(data.trashItems));
-              } else {
-                setTrashItems(new Map()); // fallback for old format or corrupted data
-              }
-              console.log('Loaded trash items:', data.trashItems);
-            }
-            if (data.recentItems) {
-              setRecentItems(data.recentItems);
-              console.log('Loaded recent items:', data.recentItems);
-            }
-          } else {
-            console.error('Failed to load user data');
+          if (data.docs) {
+            setDocs(data.docs);
           }
+          if (data.starredItems) {
+            setStarredItems(new Set(data.starredItems));
+          }
+          if (data.trashItems) {
+            setTrashItems(new Map(data.trashItems));
+          }
+          if (data.recentItems) {
+            setRecentItems(data.recentItems);
+          }
+          setDataLoaded(true);
         } else {
-          console.error('Failed to get user info');
+          console.error('Failed to load user data');
         }
       } catch (error) {
         console.error('Error loading user data:', error);
       }
-      setDataLoaded(true);
       setDataLoading(false);
     };
     
     loadUserData();
-  }, []);
+  }, [session]);
 
 
   const saveData = async () => {
@@ -624,8 +613,7 @@ export default function Dashboard() {
           <button
             className="dashboard-logout-btn"
             onClick={async () => {
-              await fetch('/api/auth/logout', { method: 'POST' });
-              window.location.href = '/';
+              await signOut({ callbackUrl: '/' });
             }}
           >
             Logout

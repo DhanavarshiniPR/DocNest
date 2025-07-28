@@ -578,3 +578,57 @@ a.secondary {
     font-size: 1.3rem;
   }
 }
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.auth-divider span {
+  padding: 0 12px;
+  color: #6b7280;
+  font-size: 0.9rem;
+  background: #ffffff;
+}
+
+.auth-github-btn {
+  width: 100%;
+  padding: 12px 16px;
+  background: #24292e;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  margin-bottom: 16px;
+}
+
+.auth-github-btn:hover:not(:disabled) {
+  background: #1f2328;
+  transform: translateY(-1px);
+}
+
+.auth-github-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.auth-github-btn svg {
+  flex-shrink: 0;
+}
