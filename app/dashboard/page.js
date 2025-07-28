@@ -670,12 +670,26 @@ export default function Dashboard() {
         
         {/* Sidebar */}
         <div className={`dashboard-sidebar ${mobileMenuOpen ? 'open' : ''}`}>
+          {/* Search Bar in Sidebar */}
+          <div className="dashboard-sidebar-search">
+            <input
+              className="dashboard-search-input"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search in Drive"
+            />
+          </div>
+          
           <nav className="dashboard-nav">
             {categories.map((cat) => (
               <button
                 key={cat}
                 className={`dashboard-nav-item ${selected === cat ? 'active' : ''}`}
-                onClick={() => { setSelected(cat); setCurrentPath([]); }}
+                onClick={() => { 
+                  setSelected(cat); 
+                  setCurrentPath([]); 
+                  setMobileMenuOpen(false); // Close mobile menu when item is selected
+                }}
               >
                 {cat === 'My Drive' && '📁'}
                 {cat === 'Shared with me' && '👥'}
@@ -690,15 +704,6 @@ export default function Dashboard() {
 
         {/* Main Content */}
         <div className="dashboard-content">
-          {/* Search Bar - Moved to main content for mobile */}
-          <div className="dashboard-sidebar-search">
-            <input
-              className="dashboard-search-input"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder="Search in Drive"
-            />
-          </div>
           
           {/* Breadcrumbs */}
           <div className="dashboard-breadcrumbs">
@@ -778,7 +783,7 @@ export default function Dashboard() {
                 type="submit"
                 className="dashboard-btn"
               >
-                Create
+                Create Folder
               </button>
             </form>
           )}
@@ -792,24 +797,51 @@ export default function Dashboard() {
                 onChange={e => setFile(e.target.files[0])}
                 style={{ display: 'none' }}
               />
-              <button
-                type="button"
-                className="dashboard-btn secondary"
-                onClick={() => document.getElementById('file-input').click()}
-              >
-                Choose File
-              </button>
-              {file && (
-                <span style={{ fontSize: '0.95rem', color: '#111', fontWeight: 500 }}>{file.name}</span>
-              )}
-              <button
-                type="submit"
-                className="dashboard-btn primary"
-                disabled={uploading}
-              >
-                {uploading ? 'Uploading...' : 'Upload'}
-              </button>
-              {error && <span style={{ color: '#dc3545', fontSize: '0.95rem', marginLeft: '12px' }}>{error}</span>}
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', width: '100%' }}>
+                <button
+                  type="button"
+                  className="dashboard-btn secondary"
+                  onClick={() => document.getElementById('file-input').click()}
+                >
+                  Choose File
+                </button>
+                {file && (
+                  <span style={{ 
+                    fontSize: '0.9rem', 
+                    color: '#111', 
+                    fontWeight: 500,
+                    wordBreak: 'break-word',
+                    flex: '1',
+                    minWidth: '150px'
+                  }}>
+                    {file.name}
+                  </span>
+                )}
+              </div>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                <button
+                  type="submit"
+                  className="dashboard-btn primary"
+                  disabled={uploading}
+                >
+                  {uploading ? 'Uploading...' : 'Upload'}
+                </button>
+                {error && (
+                  <span style={{ 
+                    color: '#dc3545', 
+                    fontSize: '0.9rem', 
+                    fontWeight: 500,
+                    padding: '8px 12px',
+                    background: '#fef2f2',
+                    border: '1px solid #fecaca',
+                    borderRadius: '6px',
+                    flex: '1',
+                    minWidth: '200px'
+                  }}>
+                    {error}
+                  </span>
+                )}
+              </div>
             </form>
           )}
 
@@ -980,7 +1012,13 @@ export default function Dashboard() {
                           {doc.uploadDate && new Date(doc.uploadDate).toLocaleDateString()}
                         </div>
                         
-                        <div style={{ display: 'flex', gap: '8px' }}>
+                        <div style={{ 
+                          display: 'flex', 
+                          gap: '8px', 
+                          flexWrap: 'wrap',
+                          justifyContent: 'flex-end',
+                          alignItems: 'center'
+                        }}>
                           {/* Star Button */}
                           {selected !== 'Trash' && (
                             <button
@@ -993,7 +1031,14 @@ export default function Dashboard() {
                                 border: 'none',
                                 fontSize: '1.2rem',
                                 cursor: 'pointer',
-                                color: starredItems.has(doc.id) ? '#ffd700' : '#ccc'
+                                color: starredItems.has(doc.id) ? '#ffd700' : '#ccc',
+                                padding: '8px',
+                                borderRadius: '6px',
+                                minWidth: '36px',
+                                minHeight: '36px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
                               }}
                               title={starredItems.has(doc.id) ? 'Unstar' : 'Star'}
                             >
@@ -1012,11 +1057,15 @@ export default function Dashboard() {
                                 background: '#f8f9fa',
                                 border: '1px solid #e0e0e0',
                                 borderRadius: '6px',
-                                padding: '6px 12px',
+                                padding: '8px 12px',
                                 fontSize: '0.85rem',
                                 cursor: 'pointer',
                                 fontWeight: 600,
-                                color: '#111'
+                                color: '#111',
+                                minHeight: '36px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
                               }}
                             >
                               View
@@ -1038,11 +1087,15 @@ export default function Dashboard() {
                                 background: '#f8f9fa',
                                 border: '1px solid #e0e0e0',
                                 borderRadius: '6px',
-                                padding: '6px 12px',
+                                padding: '8px 12px',
                                 fontSize: '0.85rem',
                                 cursor: 'pointer',
                                 fontWeight: 600,
-                                color: '#111'
+                                color: '#111',
+                                minHeight: '36px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
                               }}
                             >
                               Rename
@@ -1062,10 +1115,14 @@ export default function Dashboard() {
                                   color: '#fff',
                                   border: 'none',
                                   borderRadius: '6px',
-                                  padding: '6px 12px',
+                                  padding: '8px 12px',
                                   fontSize: '0.85rem',
                                   cursor: 'pointer',
-                                  fontWeight: 600
+                                  fontWeight: 600,
+                                  minHeight: '36px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center'
                                 }}
                               >
                                 Restore
@@ -1080,10 +1137,14 @@ export default function Dashboard() {
                                   color: '#fff',
                                   border: 'none',
                                   borderRadius: '6px',
-                                  padding: '6px 12px',
+                                  padding: '8px 12px',
                                   fontSize: '0.85rem',
                                   cursor: 'pointer',
-                                  fontWeight: 600
+                                  fontWeight: 600,
+                                  minHeight: '36px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center'
                                 }}
                               >
                                 Delete Forever
@@ -1100,10 +1161,14 @@ export default function Dashboard() {
                                 color: '#fff',
                                 border: 'none',
                                 borderRadius: '6px',
-                                padding: '6px 12px',
+                                padding: '8px 12px',
                                 fontSize: '0.85rem',
                                 cursor: 'pointer',
-                                fontWeight: 600
+                                fontWeight: 600,
+                                minHeight: '36px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
                               }}
                             >
                               Remove from Recent
@@ -1119,10 +1184,14 @@ export default function Dashboard() {
                                 color: '#fff',
                                 border: 'none',
                                 borderRadius: '6px',
-                                padding: '6px 12px',
+                                padding: '8px 12px',
                                 fontSize: '0.85rem',
                                 cursor: 'pointer',
-                                fontWeight: 600
+                                fontWeight: 600,
+                                minHeight: '36px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
                               }}
                             >
                               Remove from Starred
@@ -1138,10 +1207,14 @@ export default function Dashboard() {
                                 color: '#fff',
                                 border: 'none',
                                 borderRadius: '6px',
-                                padding: '6px 12px',
+                                padding: '8px 12px',
                                 fontSize: '0.85rem',
                                 cursor: 'pointer',
-                                fontWeight: 600
+                                fontWeight: 600,
+                                minHeight: '36px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
                               }}
                             >
                               Delete
@@ -1286,7 +1359,13 @@ export default function Dashboard() {
                       </div>
                     )}
                     
-                    <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <div style={{ 
+                      display: 'flex', 
+                      gap: '6px', 
+                      justifyContent: 'center', 
+                      flexWrap: 'wrap',
+                      alignItems: 'center'
+                    }}>
                       {/* Star Button */}
                       {selected !== 'Trash' && (
                         <button
@@ -1299,7 +1378,14 @@ export default function Dashboard() {
                             border: 'none',
                             fontSize: '1.2rem',
                             cursor: 'pointer',
-                            color: starredItems.has(doc.id) ? '#ffd700' : '#ccc'
+                            color: starredItems.has(doc.id) ? '#ffd700' : '#ccc',
+                            padding: '6px',
+                            borderRadius: '4px',
+                            minWidth: '32px',
+                            minHeight: '32px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
                           }}
                           title={starredItems.has(doc.id) ? 'Unstar' : 'Star'}
                         >
@@ -1322,7 +1408,11 @@ export default function Dashboard() {
                             fontSize: '0.8rem',
                             cursor: 'pointer',
                             fontWeight: 600,
-                            color: '#111'
+                            color: '#111',
+                            minHeight: '32px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
                           }}
                         >
                           View
@@ -1348,7 +1438,11 @@ export default function Dashboard() {
                             fontSize: '0.8rem',
                             cursor: 'pointer',
                             fontWeight: 600,
-                            color: '#111'
+                            color: '#111',
+                            minHeight: '32px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
                           }}
                         >
                           Rename
@@ -1371,7 +1465,11 @@ export default function Dashboard() {
                               padding: '6px 10px',
                               fontSize: '0.8rem',
                               cursor: 'pointer',
-                              fontWeight: 600
+                              fontWeight: 600,
+                              minHeight: '32px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center'
                             }}
                           >
                             Restore
@@ -1389,7 +1487,11 @@ export default function Dashboard() {
                               padding: '6px 10px',
                               fontSize: '0.8rem',
                               cursor: 'pointer',
-                              fontWeight: 600
+                              fontWeight: 600,
+                              minHeight: '32px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center'
                             }}
                           >
                             Delete Forever
@@ -1409,7 +1511,11 @@ export default function Dashboard() {
                             padding: '6px 10px',
                             fontSize: '0.8rem',
                             cursor: 'pointer',
-                            fontWeight: 600
+                            fontWeight: 600,
+                            minHeight: '32px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
                           }}
                         >
                           Remove from Recent
@@ -1428,7 +1534,11 @@ export default function Dashboard() {
                             padding: '6px 10px',
                             fontSize: '0.8rem',
                             cursor: 'pointer',
-                            fontWeight: 600
+                            fontWeight: 600,
+                            minHeight: '32px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
                           }}
                         >
                           Remove from Starred
@@ -1447,7 +1557,11 @@ export default function Dashboard() {
                             padding: '6px 10px',
                             fontSize: '0.8rem',
                             cursor: 'pointer',
-                            fontWeight: 600
+                            fontWeight: 600,
+                            minHeight: '32px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
                           }}
                         >
                           Delete
