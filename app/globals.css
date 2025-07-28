@@ -1403,27 +1403,24 @@ a {
   .mobile-menu-btn,
   .dashboard-new-btn,
   .dashboard-logout-btn {
-    min-width: 60px !important;
-    padding: 8px 10px !important;
-    font-size: 12px !important;
+    min-width: 70px !important;
+    padding: 10px 12px !important;
+    font-size: 0.8rem !important;
     white-space: nowrap !important;
     flex: 1 !important;
-    max-width: 80px !important;
+    max-width: 90px !important;
     text-overflow: ellipsis !important;
     overflow: hidden !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    min-height: 40px !important;
   }
   
-  /* Better mobile button text */
-  .mobile-menu-btn::after {
-    content: "Menu" !important;
-  }
-  
-  .dashboard-new-btn::after {
-    content: "New" !important;
-  }
-  
+  /* Remove button text duplication - buttons should only show their original text */
+  .mobile-menu-btn::after,
+  .dashboard-new-btn::after,
   .dashboard-logout-btn::after {
-    content: "Logout" !important;
+    content: none !important;
   }
   
   .dashboard-content {
@@ -2360,6 +2357,7 @@ a {
   .dashboard-header {
     padding: 12px 8px !important;
     gap: 8px !important;
+    align-items: center !important;
   }
   
   .dashboard-welcome-text {
@@ -2368,6 +2366,8 @@ a {
   
   .dashboard-actions {
     gap: 6px !important;
+    justify-content: center !important;
+    width: 100% !important;
   }
   
   .mobile-menu-btn,
@@ -2868,6 +2868,39 @@ a {
     backface-visibility: hidden !important;
   }
   
+  /* Better mobile header spacing */
+  .dashboard-header {
+    padding: 10px 8px !important;
+    gap: 6px !important;
+  }
+  
+  /* Better mobile welcome text */
+  .dashboard-welcome-text {
+    font-size: 1rem !important;
+    line-height: 1.3 !important;
+    margin: 0 !important;
+  }
+  
+  /* Better mobile actions layout */
+  .dashboard-actions {
+    gap: 4px !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    max-width: 280px !important;
+    margin: 0 auto !important;
+  }
+  
+  /* Better mobile button sizing */
+  .mobile-menu-btn,
+  .dashboard-new-btn,
+  .dashboard-logout-btn {
+    min-width: 65px !important;
+    max-width: 85px !important;
+    padding: 8px 10px !important;
+    font-size: 0.75rem !important;
+    min-height: 36px !important;
+  }
+  
   /* Reduce motion for better performance */
   .dashboard-sidebar,
   .dashboard-btn,
@@ -2880,6 +2913,32 @@ a {
   .dashboard-container {
     -webkit-transform: translateZ(0) !important;
     transform: translateZ(0) !important;
+  }
+  
+  /* Better mobile content spacing */
+  .dashboard-content {
+    padding: 12px 8px !important;
+    margin-top: 0 !important;
+  }
+  
+  /* Better mobile toolbar spacing */
+  .dashboard-toolbar {
+    padding: 10px 8px !important;
+    gap: 6px !important;
+    margin-bottom: 16px !important;
+  }
+  
+  /* Better mobile form spacing */
+  .dashboard-form {
+    padding: 10px 8px !important;
+    gap: 6px !important;
+    margin-bottom: 16px !important;
+  }
+  
+  /* Better mobile list spacing */
+  .dashboard-list-item {
+    padding: 10px 8px !important;
+    min-height: 52px !important;
   }
 }
 
