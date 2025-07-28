@@ -1,134 +1,91 @@
 "use client";
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from "react";
+import styles from '../page.module.css';
 
 export default function TestAuth() {
-  const [authStatus, setAuthStatus] = useState('Checking...');
-  const [username, setUsername] = useState('');
-  const router = useRouter();
+  const [authStatus, setAuthStatus] = useState('Loading...');
+  const [userData, setUserData] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    checkAuthStatus();
+    checkAuth();
   }, []);
 
-  const checkAuthStatus = async () => {
+  const checkAuth = async () => {
     try {
-      const response = await fetch('/api/auth/me');
-      if (response.ok) {
-        const data = await response.json();
+      setAuthStatus('Checking authentication...');
+      const res = await fetch('/api/auth/me');
+      const data = await res.json();
+      
+      if (res.ok) {
         setAuthStatus('Authenticated');
-        setUsername(data.username);
+        setUserData(data);
+        setError(null);
       } else {
         setAuthStatus('Not authenticated');
-        setUsername('');
+        setError(data.error);
+        setUserData(null);
       }
-    } catch (error) {
+    } catch (err) {
       setAuthStatus('Error checking auth');
-      console.error('Auth check error:', error);
+      setError(err.message);
+      setUserData(null);
     }
   };
 
-  const clearSession = async () => {
+  const testLogin = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-      setAuthStatus('Session cleared');
-      setUsername('');
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    } catch (error) {
-      console.error('Logout error:', error);
+      setAuthStatus('Testing login...');
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: 'test', password: 'test123' })
+      });
+      const data = await res.json();
+      
+      if (res.ok) {
+        setAuthStatus('Login successful');
+        setTimeout(checkAuth, 1000); // Check auth after login
+      } else {
+        setAuthStatus('Login failed');
+        setError(data.error);
+      }
+    } catch (err) {
+      setAuthStatus('Login error');
+      setError(err.message);
     }
-  };
-
-  const goToDashboard = () => {
-    router.push('/dashboard');
-  };
-
-  const goToLogin = () => {
-    router.push('/login');
   };
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h1>Authentication Test Page</h1>
-      
-      <div style={{ marginBottom: '20px' }}>
-        <h2>Current Status:</h2>
-        <p><strong>Auth Status:</strong> {authStatus}</p>
-        {username && <p><strong>Username:</strong> {username}</p>}
-      </div>
-
-      <div style={{ marginBottom: '20px' }}>
-        <h2>Actions:</h2>
-        <button 
-          onClick={checkAuthStatus}
-          style={{ 
-            marginRight: '10px', 
-            padding: '10px 15px', 
-            backgroundColor: '#007bff', 
-            color: 'white', 
-            border: 'none', 
-            borderRadius: '5px',
-            cursor: 'pointer'
-          }}
-        >
-          Check Auth Status
-        </button>
+    <div className={styles.background}>
+      <div className={styles['auth-card']}>
+        <h2>Authentication Test</h2>
         
-        <button 
-          onClick={clearSession}
-          style={{ 
-            marginRight: '10px', 
-            padding: '10px 15px', 
-            backgroundColor: '#dc3545', 
-            color: 'white', 
-            border: 'none', 
-            borderRadius: '5px',
-            cursor: 'pointer'
-          }}
-        >
-          Clear Session
-        </button>
+        <div style={{ marginBottom: '20px' }}>
+          <strong>Status:</strong> {authStatus}
+        </div>
         
-        <button 
-          onClick={goToDashboard}
-          style={{ 
-            marginRight: '10px', 
-            padding: '10px 15px', 
-            backgroundColor: '#28a745', 
-            color: 'white', 
-            border: 'none', 
-            borderRadius: '5px',
-            cursor: 'pointer'
-          }}
-        >
-          Go to Dashboard
-        </button>
+        {userData && (
+          <div style={{ marginBottom: '20px', padding: '10px', background: '#f0f0f0', borderRadius: '5px' }}>
+            <strong>User Data:</strong>
+            <pre>{JSON.stringify(userData, null, 2)}</pre>
+          </div>
+        )}
         
-        <button 
-          onClick={goToLogin}
-          style={{ 
-            padding: '10px 15px', 
-            backgroundColor: '#ffc107', 
-            color: 'black', 
-            border: 'none', 
-            borderRadius: '5px',
-            cursor: 'pointer'
-          }}
-        >
-          Go to Login
-        </button>
-      </div>
-
-      <div style={{ marginTop: '30px' }}>
-        <h2>Instructions:</h2>
-        <ol>
-          <li>Click &quot;Clear Session&quot; to remove any existing authentication</li>
-          <li>Click &quot;Go to Login&quot; to test the login page</li>
-          <li>Try to access the dashboard directly - it should redirect to login</li>
-          <li>After logging in, you should be able to access the dashboard</li>
-        </ol>
+        {error && (
+          <div style={{ marginBottom: '20px', padding: '10px', background: '#ffebee', borderRadius: '5px', color: '#c62828' }}>
+            <strong>Error:</strong> {error}
+          </div>
+        )}
+        
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button onClick={checkAuth} className={styles['auth-btn']}>
+            Check Auth
+          </button>
+          <button onClick={testLogin} className={styles['auth-btn']}>
+            Test Login
+          </button>
+        </div>
       </div>
     </div>
   );

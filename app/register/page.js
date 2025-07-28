@@ -22,29 +22,39 @@ export default function Register() {
     }
     setLoading(true);
     try {
+      // Step 1: Register the user
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
       });
       const data = await res.json();
+      
       if (res.ok) {
-        // Auto-login after register
+        console.log('Registration successful:', data);
+        
+        // Step 2: Auto-login after register
         const loginRes = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password })
         });
+        
         if (loginRes.ok) {
+          console.log('Auto-login successful');
           router.push('/dashboard');
         } else {
-          setError('Registration succeeded but login failed.');
+          const loginData = await loginRes.json();
+          console.error('Auto-login failed:', loginData);
+          setError(`Registration succeeded but login failed: ${loginData.error || 'Unknown error'}`);
         }
       } else {
+        console.error('Registration failed:', data);
         setError(data.error || 'Registration failed');
       }
     } catch (err) {
-      setError('Network error');
+      console.error('Network error:', err);
+      setError('Network error - please check your connection');
     }
     setLoading(false);
   };

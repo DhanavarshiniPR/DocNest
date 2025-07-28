@@ -7,7 +7,11 @@ export async function GET(req) {
   try {
     const token = req.cookies.get('token')?.value;
     
+    console.log('Auth check - Token present:', !!token);
+    console.log('Auth check - Request headers:', Object.fromEntries(req.headers.entries()));
+    
     if (!token) {
+      console.log('No token found in cookies');
       return NextResponse.json({ error: 'No token found' }, { status: 401 });
     }
 
