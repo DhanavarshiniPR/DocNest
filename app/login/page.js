@@ -1,12 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { signIn, getSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import styles from '../page.module.css';
 
 export default function Login() {
+  const { data: session, status } = useSession();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -14,23 +15,38 @@ export default function Login() {
   const [githubLoading, setGithubLoading] = useState(false);
   const router = useRouter();
 
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (status === 'loading') return;
+    if (session) {
+      router.push('/dashboard');
+    }
+  }, [session, status, router]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
+      console.log('Attempting login for:', username);
       const result = await signIn('credentials', {
         username,
         password,
         redirect: false,
       });
 
+      console.log('Login result:', result);
+
       if (result?.error) {
         setError('Invalid username or password');
+      } else if (result?.ok) {
+        router.push('/dashboard');
       } else {
+        // If no error but also no success, try redirecting anyway
         router.push('/dashboard');
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError('Network error');
     }
     setLoading(false);
@@ -40,17 +56,24 @@ export default function Login() {
     setGithubLoading(true);
     setError("");
     try {
+      console.log('Attempting GitHub login');
       const result = await signIn('github', {
         callbackUrl: '/dashboard',
         redirect: false,
       });
 
+      console.log('GitHub login result:', result);
+
       if (result?.error) {
         setError('GitHub login failed');
       } else if (result?.url) {
         router.push(result.url);
+      } else {
+        // If no error but also no URL, try redirecting to dashboard
+        router.push('/dashboard');
       }
     } catch (err) {
+      console.error('GitHub login error:', err);
       setError('GitHub login error');
     }
     setGithubLoading(false);

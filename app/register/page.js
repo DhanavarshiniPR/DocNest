@@ -1,18 +1,27 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import styles from '../page.module.css';
 
 export default function Register() {
+  const { data: session, status } = useSession();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (status === 'loading') return;
+    if (session) {
+      router.push('/dashboard');
+    }
+  }, [session, status, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,24 +47,30 @@ export default function Register() {
         // Add a small delay to ensure the user data is properly saved
         setTimeout(async () => {
           try {
+            console.log('Attempting auto-login for:', username);
             const result = await signIn('credentials', {
               username,
               password,
               redirect: false,
             });
             
+            console.log('Auto-login result:', result);
+            
             if (result?.error) {
               console.error('Auto-login failed:', result.error);
               setError('Registration succeeded but login failed. Please try logging in manually.');
-            } else {
+            } else if (result?.ok) {
               console.log('Auto-login successful, redirecting to dashboard');
+              router.push('/dashboard');
+            } else {
+              console.log('Auto-login result unclear, redirecting anyway');
               router.push('/dashboard');
             }
           } catch (loginError) {
             console.error('Auto-login error:', loginError);
             setError('Registration succeeded but login failed. Please try logging in manually.');
           }
-        }, 500); // 500ms delay
+        }, 1000); // Increased delay to 1 second
       } else {
         console.error('Registration failed:', data);
         setError(data.error || 'Registration failed');

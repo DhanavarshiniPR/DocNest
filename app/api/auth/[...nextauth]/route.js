@@ -2,59 +2,7 @@ import NextAuth from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
-import fs from 'fs';
-import path from 'path';
-
-const USERS_FILE = path.join(process.cwd(), 'users.json');
-
-// Fallback storage for production environments
-let inMemoryUsers = [];
-
-function readUsers() {
-  try {
-    if (process.env.NODE_ENV === 'production' && inMemoryUsers.length > 0) {
-      return inMemoryUsers;
-    }
-    
-    if (fs.existsSync(USERS_FILE)) {
-      const data = fs.readFileSync(USERS_FILE, 'utf8');
-      const users = JSON.parse(data);
-      if (process.env.NODE_ENV === 'production') {
-        inMemoryUsers = users;
-      }
-      return users;
-    }
-  } catch (error) {
-    console.error('Error reading users file:', error);
-    if (process.env.NODE_ENV === 'production') {
-      return inMemoryUsers;
-    }
-  }
-  return [];
-}
-
-function writeUsers(users) {
-  try {
-    if (process.env.NODE_ENV === 'production') {
-      inMemoryUsers = users;
-    }
-    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
-    return true;
-  } catch (error) {
-    console.error('Error writing users file:', error);
-    if (process.env.NODE_ENV === 'production') {
-      return true;
-    }
-    return false;
-  }
-}
-
-// Debug function to log user data
-function debugUsers() {
-  const users = readUsers();
-  console.log('Current users in NextAuth:', users);
-  return users;
-}
+import { readUsers, writeUsers, debugUsers, findUser } from '../../../lib/auth-utils';
 
 const handler = NextAuth({
   providers: [
@@ -76,8 +24,7 @@ const handler = NextAuth({
           return null;
         }
 
-        const users = debugUsers();
-        const user = users.find(u => u.username === credentials.username);
+        const user = findUser(credentials.username);
 
         if (!user) {
           console.log('User not found:', credentials.username);
@@ -86,19 +33,24 @@ const handler = NextAuth({
 
         console.log('User found:', { username: user.username, hasPassword: !!user.password });
 
-        const isValidPassword = await bcrypt.compare(credentials.password, user.password);
-        if (!isValidPassword) {
-          console.log('Invalid password for user:', credentials.username);
+        try {
+          const isValidPassword = await bcrypt.compare(credentials.password, user.password);
+          if (!isValidPassword) {
+            console.log('Invalid password for user:', credentials.username);
+            return null;
+          }
+
+          console.log('Authentication successful for user:', credentials.username);
+
+          return {
+            id: user.username,
+            name: user.username,
+            email: user.email || `${user.username}@docnest.local`,
+          };
+        } catch (error) {
+          console.error('Password comparison error:', error);
           return null;
         }
-
-        console.log('Authentication successful for user:', credentials.username);
-
-        return {
-          id: user.username,
-          name: user.username,
-          email: user.email || `${user.username}@docnest.local`,
-        };
       }
     })
   ],
