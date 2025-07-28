@@ -4,7 +4,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { readUsers, writeUsers, debugUsers, findUser } from '../../../lib/auth-utils';
 
-const handler = NextAuth({
+export const authOptions = {
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_ID || 'your-github-client-id',
@@ -110,6 +110,8 @@ const handler = NextAuth({
     maxAge: 7 * 24 * 60 * 60, // 7 days
   },
   secret: process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || 'dev_secret_key',
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST }; 

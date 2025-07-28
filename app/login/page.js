@@ -29,6 +29,20 @@ export default function Login() {
     setLoading(true);
     try {
       console.log('Attempting login for:', username);
+      
+      // First, let's check if the user exists by making a test request
+      const testRes = await fetch('/api/auth/register-nextauth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password: 'test' })
+      });
+      
+      if (testRes.status === 409) {
+        console.log('User exists, proceeding with login');
+      } else {
+        console.log('User might not exist or other issue');
+      }
+      
       const result = await signIn('credentials', {
         username,
         password,
@@ -38,12 +52,25 @@ export default function Login() {
       console.log('Login result:', result);
 
       if (result?.error) {
+        console.error('Login error details:', result.error);
         setError('Invalid username or password');
       } else if (result?.ok) {
+        console.log('Login successful, redirecting to dashboard');
         router.push('/dashboard');
       } else {
-        // If no error but also no success, try redirecting anyway
-        router.push('/dashboard');
+        console.log('Login result unclear, checking session...');
+        // Check if we have a session
+        const sessionRes = await fetch('/api/auth/session');
+        const sessionData = await sessionRes.json();
+        console.log('Session data:', sessionData);
+        
+        if (sessionData.user) {
+          console.log('Session found, redirecting to dashboard');
+          router.push('/dashboard');
+        } else {
+          console.log('No session found, login might have failed');
+          setError('Login failed. Please try again.');
+        }
       }
     } catch (err) {
       console.error('Login error:', err);

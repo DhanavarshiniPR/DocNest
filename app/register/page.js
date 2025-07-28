@@ -44,33 +44,51 @@ export default function Register() {
         console.log('Registration successful:', data);
         
         // Step 2: Auto-login after register using NextAuth
-        // Add a small delay to ensure the user data is properly saved
-        setTimeout(async () => {
-          try {
-            console.log('Attempting auto-login for:', username);
-            const result = await signIn('credentials', {
-              username,
-              password,
-              redirect: false,
-            });
-            
-            console.log('Auto-login result:', result);
-            
-            if (result?.error) {
-              console.error('Auto-login failed:', result.error);
-              setError('Registration succeeded but login failed. Please try logging in manually.');
-            } else if (result?.ok) {
-              console.log('Auto-login successful, redirecting to dashboard');
-              router.push('/dashboard');
-            } else {
-              console.log('Auto-login result unclear, redirecting anyway');
-              router.push('/dashboard');
-            }
-          } catch (loginError) {
-            console.error('Auto-login error:', loginError);
-            setError('Registration succeeded but login failed. Please try logging in manually.');
+        // Try immediate login first, then with delay if needed
+        try {
+          console.log('Attempting immediate auto-login for:', username);
+          const result = await signIn('credentials', {
+            username,
+            password,
+            redirect: false,
+          });
+          
+          console.log('Immediate auto-login result:', result);
+          
+          if (result?.error) {
+            console.log('Immediate login failed, trying with delay...');
+            // If immediate login fails, try with a delay
+            setTimeout(async () => {
+              try {
+                console.log('Attempting delayed auto-login for:', username);
+                const delayedResult = await signIn('credentials', {
+                  username,
+                  password,
+                  redirect: false,
+                });
+                
+                console.log('Delayed auto-login result:', delayedResult);
+                
+                if (delayedResult?.error) {
+                  console.error('Delayed auto-login failed:', delayedResult.error);
+                  setError('Registration succeeded but login failed. Please try logging in manually.');
+                } else {
+                  console.log('Delayed auto-login successful, redirecting to dashboard');
+                  router.push('/dashboard');
+                }
+              } catch (loginError) {
+                console.error('Delayed auto-login error:', loginError);
+                setError('Registration succeeded but login failed. Please try logging in manually.');
+              }
+            }, 2000); // 2 second delay
+          } else {
+            console.log('Immediate auto-login successful, redirecting to dashboard');
+            router.push('/dashboard');
           }
-        }, 1000); // Increased delay to 1 second
+        } catch (loginError) {
+          console.error('Immediate auto-login error:', loginError);
+          setError('Registration succeeded but login failed. Please try logging in manually.');
+        }
       } else {
         console.error('Registration failed:', data);
         setError(data.error || 'Registration failed');
