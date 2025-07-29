@@ -1,38 +1,28 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { signIn, useSession } from 'next-auth/react';
-import styles from '../page.module.css';
 
 export default function Register() {
-  const { data: session, status } = useSession();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
-
-  // Redirect if already authenticated
-  useEffect(() => {
-    if (status === 'loading') return;
-    if (session) {
-      router.push('/dashboard');
-    }
-  }, [session, status, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
+    
     if (password !== confirm) {
       setError("Passwords do not match");
       return;
     }
+    
     setLoading(true);
     try {
-      // Step 1: Register the user
       const res = await fetch('/api/auth/register-nextauth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -41,116 +31,148 @@ export default function Register() {
       const data = await res.json();
       
       if (res.ok) {
-        console.log('Registration successful:', data);
-        
-        // Step 2: Auto-login after register using NextAuth
-        // Try immediate login first, then with delay if needed
-        try {
-          console.log('Attempting immediate auto-login for:', username);
-          const result = await signIn('credentials', {
-            username,
-            password,
-            redirect: false,
-          });
-          
-          console.log('Immediate auto-login result:', result);
-          
-          if (result?.error) {
-            console.log('Immediate login failed, trying with delay...');
-            // If immediate login fails, try with a delay
-            setTimeout(async () => {
-              try {
-                console.log('Attempting delayed auto-login for:', username);
-                const delayedResult = await signIn('credentials', {
-                  username,
-                  password,
-                  redirect: false,
-                });
-                
-                console.log('Delayed auto-login result:', delayedResult);
-                
-                if (delayedResult?.error) {
-                  console.error('Delayed auto-login failed:', delayedResult.error);
-                  setError('Registration succeeded but login failed. Please try logging in manually.');
-                } else {
-                  console.log('Delayed auto-login successful, redirecting to dashboard');
-                  router.push('/dashboard');
-                }
-              } catch (loginError) {
-                console.error('Delayed auto-login error:', loginError);
-                setError('Registration succeeded but login failed. Please try logging in manually.');
-              }
-            }, 2000); // 2 second delay
-          } else {
-            console.log('Immediate auto-login successful, redirecting to dashboard');
-            router.push('/dashboard');
-          }
-        } catch (loginError) {
-          console.error('Immediate auto-login error:', loginError);
-          setError('Registration succeeded but login failed. Please try logging in manually.');
-        }
+        setSuccess('Registration successful! Please login with your new account.');
       } else {
-        console.error('Registration failed:', data);
         setError(data.error || 'Registration failed');
       }
     } catch (err) {
-      console.error('Network error:', err);
       setError('Network error - please check your connection');
     }
     setLoading(false);
   };
 
   return (
-    <div className={styles.background}>
-      <div className={styles.logo}>
-        <Image src="/DOC NEST LOGO.png" alt="DocNest Logo" width={160} height={48} />
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundColor: '#f8f9fa',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '2rem'
+    }}>
+      {/* Logo Section */}
+      <div style={{ 
+        textAlign: 'center', 
+        marginBottom: '2rem',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+      }}>
+        <Image 
+          src="/DOC NEST LOGO.png" 
+          alt="DocNest Logo" 
+          width={200} 
+          height={60}
+          style={{ marginBottom: '1rem' }}
+        />
+        <h1 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '2rem' }}>Create Account</h1>
+        <p style={{ color: '#666', fontSize: '1.1rem' }}>Join DocNest today</p>
       </div>
-      
-      <div className={styles['auth-title']}>Create your DocNest account</div>
-      <div className={styles['auth-card']}>
-        <form onSubmit={handleSubmit} className={styles['auth-form']} autoComplete="off">
-          <label className={styles['auth-label']}>Username</label>
-          <input
-            type="text"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            className={styles['auth-input']}
-            required
-          />
-          <label className={styles['auth-label']}>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            className={styles['auth-input']}
-            required
-          />
-          <label className={styles['auth-label']}>Confirm Password</label>
-          <input
-            type="password"
-            value={confirm}
-            onChange={e => setConfirm(e.target.value)}
-            className={styles['auth-input']}
-            required
-          />
-          <button type="submit" disabled={loading} className={styles['auth-btn']}>
-            {loading ? "Registering..." : "Register"}
-          </button>
-          {error && <div className={styles['auth-error']}>{error}</div>}
-        </form>
-        <div className={styles['auth-link-container']}>
-          Already have an account? <Link href="/login" className={styles['auth-link']}>Login</Link>
-        </div>
-        {error && error.includes('login failed') && (
-          <div className={styles['auth-link-container']} style={{ marginTop: '10px' }}>
-            <Link href="/login" className={styles['auth-link']}>
-              Click here to login manually
-            </Link>
+
+      <div style={{ 
+        backgroundColor: 'white',
+        padding: '2rem',
+        borderRadius: '8px',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        width: '100%',
+        maxWidth: '400px'
+      }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#333' }}>
+              Username
+            </label>
+            <input
+              type="text"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '1rem'
+              }}
+              required
+            />
           </div>
-        )}
+          
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#333' }}>
+              Password
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '1rem'
+              }}
+              required
+            />
+          </div>
+          
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#333' }}>
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              value={confirm}
+              onChange={e => setConfirm(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '1rem'
+              }}
+              required
+            />
+          </div>
+          
+          <button 
+            type="submit" 
+            disabled={loading} 
+            style={{
+              backgroundColor: loading ? '#ccc' : '#007bff',
+              color: 'white',
+              padding: '0.75rem',
+              border: 'none',
+              borderRadius: '4px',
+              fontSize: '1rem',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              marginTop: '1rem',
+              fontWeight: 'bold'
+            }}
+          >
+            {loading ? "Registering..." : "Create Account"}
+          </button>
+          
+          {error && (
+            <div style={{ color: '#dc3545', textAlign: 'center', marginTop: '1rem' }}>
+              {error}
+            </div>
+          )}
+          
+          {success && (
+            <div style={{ color: '#28a745', textAlign: 'center', marginTop: '1rem', fontWeight: 'bold' }}>
+              {success}
+            </div>
+          )}
+        </form>
+        
+        <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+          Already have an account? <Link href="/login" style={{ color: '#007bff', textDecoration: 'none', fontWeight: 'bold' }}>Login</Link>
+        </div>
       </div>
       
-      <div className={styles.footer}>
+      <div style={{ textAlign: 'center', marginTop: '2rem', color: '#666' }}>
         © DocNest 2025. All rights reserved.
       </div>
     </div>

@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import { readUsers, writeUsers, debugUsers, findUser } from '../../../lib/auth-utils';
 
 export const authOptions = {
+  debug: true, // Enable debug mode
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_ID || 'your-github-client-id',
@@ -56,9 +57,11 @@ export const authOptions = {
   ],
   callbacks: {
     async jwt({ token, user, account }) {
+      console.log('JWT callback called:', { hasToken: !!token, hasUser: !!user, hasAccount: !!account });
       if (account && user) {
         // Handle GitHub OAuth
         if (account.provider === 'github') {
+          console.log('Processing GitHub OAuth');
           const users = readUsers();
           const existingUser = users.find(u => u.githubId === user.id);
           
@@ -80,30 +83,38 @@ export const authOptions = {
           token.avatar = user.image;
         } else {
           // Handle credentials login
+          console.log('Processing credentials login');
           token.username = user.name;
         }
       }
+      console.log('JWT callback returning token:', { username: token.username });
       return token;
     },
     async session({ session, token }) {
+      console.log('Session callback called:', { hasSession: !!session, hasToken: !!token });
       session.user.username = token.username;
       session.user.githubId = token.githubId;
       session.user.avatar = token.avatar;
+      console.log('Session callback returning session:', { username: session.user.username });
       return session;
     },
     async signIn({ user, account, profile }) {
+      console.log('SignIn callback called:', { hasUser: !!user, hasAccount: !!account });
       if (account?.provider === 'github') {
         // Ensure user has a username
         if (!user.login && !user.name) {
+          console.log('GitHub user missing username');
           return false;
         }
       }
+      console.log('SignIn callback returning true');
       return true;
     }
   },
   pages: {
     signIn: '/login',
     signUp: '/register',
+    error: '/auth/error',
   },
   session: {
     strategy: 'jwt',

@@ -22,5 +22,25 @@
   {
     "username": "VarshiniRaaj",
     "password": "$2b$10$OMUVrNluL2NNp.37JIQ3TuNTCzNkXdEbDRlWuWtNRmfkE7N9et0oq"
+  },
+  {
+    "username": "testuser",
+    "password": "$2b$10$6LO4nEzuCwpHqYtLshuTeuUbGCNcUDCXACkrRZz72vWlGEoVRfIne",
+    "createdAt": "2025-07-29T15:49:45.590Z"
+  },
+  {
+    "username": "newuser123",
+    "password": "$2b$10$3egjASsYy3lHbgJ9PUKvfOfnKpdy4FZLQ/J/.AAmQehPWQujS0WnK",
+    "createdAt": "2025-07-29T15:52:48.515Z"
+  },
+  {
+    "username": "testuser123",
+    "password": "$2b$10$VXi2bhGJubyQyURgszLYSeytvSSuDgv2g1z7ybuNzm/l4cL52IeA2",
+    "createdAt": "2025-07-29T15:57:21.191Z"
+  },
+  {
+    "username": "Sharnitha",
+    "password": "$2b$10$fLCp3E.qd2t8xr9KboJZIOF3Ty.X47W3CksqW1TCR/IKJwVYiBUhK",
+    "createdAt": "2025-07-29T16:13:47.160Z"
   }
 ]
