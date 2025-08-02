@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { signIn, useSession } from 'next-auth/react';
+import SessionDebug from '../components/SessionDebug';
 
 export default function Login() {
   const { data: session, status } = useSession();
@@ -34,18 +35,24 @@ export default function Login() {
     setLoading(true);
     
     try {
+      console.log('Attempting login with username:', username);
       const result = await signIn('credentials', {
         username,
         password,
         redirect: false,
       });
       
+      console.log('Login result:', result);
+      
       if (result?.error) {
         setError('Invalid username or password');
+        console.error('Login error:', result.error);
       } else {
+        console.log('Login successful, redirecting to dashboard');
         router.push('/dashboard');
       }
     } catch (err) {
+      console.error('Login exception:', err);
       setError('An error occurred during login');
     }
     setLoading(false);
@@ -56,14 +63,14 @@ export default function Login() {
     return (
       <div style={{ 
         minHeight: '100vh', 
-        backgroundColor: '#f8f9fa',
+        backgroundColor: '#ffffff',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center'
       }}>
         <div style={{ textAlign: 'center', padding: '2rem' }}>
-          <h2>Loading...</h2>
+          <h2 style={{ color: '#000000' }}>Loading...</h2>
         </div>
       </div>
     );
@@ -72,13 +79,14 @@ export default function Login() {
   return (
     <div style={{ 
       minHeight: '100vh', 
-      backgroundColor: '#f8f9fa',
+      backgroundColor: '#ffffff',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       padding: '2rem'
     }}>
+      <SessionDebug />
       {/* Logo Section */}
       <div style={{ 
         textAlign: 'center', 
@@ -94,8 +102,8 @@ export default function Login() {
           height={60}
           style={{ marginBottom: '1rem' }}
         />
-        <h1 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '2rem' }}>Welcome Back</h1>
-        <p style={{ color: '#666', fontSize: '1.1rem' }}>Sign in to your DocNest account</p>
+        <h1 style={{ color: '#000000', marginBottom: '0.5rem', fontSize: '2rem' }}>Welcome Back</h1>
+        <p style={{ color: '#333333', fontSize: '1.1rem' }}>Sign in to your DocNest account</p>
       </div>
 
       <div style={{ 
@@ -108,7 +116,7 @@ export default function Login() {
       }}>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#333' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#000000' }}>
               Username
             </label>
             <input
@@ -127,7 +135,7 @@ export default function Login() {
           </div>
           
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#333' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#000000' }}>
               Password
             </label>
             <input
@@ -149,7 +157,7 @@ export default function Login() {
             type="submit" 
             disabled={loading} 
             style={{
-              backgroundColor: loading ? '#ccc' : '#007bff',
+              backgroundColor: loading ? '#ccc' : '#000000',
               color: 'white',
               padding: '0.75rem',
               border: 'none',
@@ -171,11 +179,11 @@ export default function Login() {
         </form>
         
         <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-          Don't have an account? <Link href="/register" style={{ color: '#007bff', textDecoration: 'none', fontWeight: 'bold' }}>Register</Link>
+          Don't have an account? <Link href="/register" style={{ color: '#000000', textDecoration: 'none', fontWeight: 'bold' }}>Register</Link>
         </div>
       </div>
       
-      <div style={{ textAlign: 'center', marginTop: '2rem', color: '#666' }}>
+      <div style={{ textAlign: 'center', marginTop: '2rem', color: '#666666' }}>
         © DocNest 2025. All rights reserved.
       </div>
     </div>

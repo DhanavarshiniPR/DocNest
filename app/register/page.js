@@ -44,7 +44,7 @@ export default function Register() {
   return (
     <div style={{ 
       minHeight: '100vh', 
-      backgroundColor: '#f8f9fa',
+      backgroundColor: '#ffffff',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -66,8 +66,8 @@ export default function Register() {
           height={60}
           style={{ marginBottom: '1rem' }}
         />
-        <h1 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '2rem' }}>Create Account</h1>
-        <p style={{ color: '#666', fontSize: '1.1rem' }}>Join DocNest today</p>
+        <h1 style={{ color: '#000000', marginBottom: '0.5rem', fontSize: '2rem' }}>Create Account</h1>
+        <p style={{ color: '#333333', fontSize: '1.1rem' }}>Join DocNest today</p>
       </div>
 
       <div style={{ 
@@ -80,7 +80,7 @@ export default function Register() {
       }}>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#333' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#000000' }}>
               Username
             </label>
             <input
@@ -99,7 +99,7 @@ export default function Register() {
           </div>
           
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#333' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#000000' }}>
               Password
             </label>
             <input
@@ -118,7 +118,7 @@ export default function Register() {
           </div>
           
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#333' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#000000' }}>
               Confirm Password
             </label>
             <input
@@ -140,7 +140,7 @@ export default function Register() {
             type="submit" 
             disabled={loading} 
             style={{
-              backgroundColor: loading ? '#ccc' : '#007bff',
+              backgroundColor: loading ? '#ccc' : '#000000',
               color: 'white',
               padding: '0.75rem',
               border: 'none',
@@ -168,11 +168,11 @@ export default function Register() {
         </form>
         
         <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-          Already have an account? <Link href="/login" style={{ color: '#007bff', textDecoration: 'none', fontWeight: 'bold' }}>Login</Link>
+          Already have an account? <Link href="/login" style={{ color: '#000000', textDecoration: 'none', fontWeight: 'bold' }}>Login</Link>
         </div>
       </div>
       
-      <div style={{ textAlign: 'center', marginTop: '2rem', color: '#666' }}>
+      <div style={{ textAlign: 'center', marginTop: '2rem', color: '#666666' }}>
         © DocNest 2025. All rights reserved.
       </div>
     </div>

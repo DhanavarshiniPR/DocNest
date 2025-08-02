@@ -4,6 +4,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import styles from '../page.module.css';
 import Image from 'next/image';
+import SessionDebug from '../components/SessionDebug';
 
 
 const categories = [
@@ -51,8 +52,12 @@ export default function Dashboard() {
     if (status === 'loading') return;
     if (!session) {
       router.push('/login');
-    } else {
+    } else if (session?.user?.username) {
       setUsername(session.user.username);
+    } else if (session?.user) {
+      // Session exists but no username - this shouldn't happen but let's handle it
+      console.warn('Session exists but no username found:', session);
+      router.push('/login');
     }
   }, [session, status, router]);
   
@@ -91,21 +96,22 @@ export default function Dashboard() {
     const loadUserData = async () => {
       if (!session?.user?.username) return;
       
+      const currentUsername = session.user.username;
       setDataLoading(true);
       try {
-        console.log('Loading data for user:', session.user.username);
-        setUsername(session.user.username);
+        console.log('Loading data for user:', currentUsername);
+        setUsername(currentUsername);
         
         // Load user's saved data
         const res = await fetch('/api/data/load', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: session.user.username })
+          body: JSON.stringify({ username: currentUsername })
         });
         
         if (res.ok) {
           const { data } = await res.json();
-          console.log('Loaded user data for', session.user.username, ':', data);
+          console.log('Loaded user data for', currentUsername, ':', data);
           
           if (data.docs) {
             setDocs(data.docs);
@@ -569,8 +575,29 @@ export default function Dashboard() {
       return doc.name.toLowerCase().includes(search.toLowerCase());
     });
 
+  // Show loading state while session is being determined
+  if (status === 'loading' || !session?.user?.username) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#ffffff',
+        color: '#000000'
+      }}>
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <h2>Loading...</h2>
+          <p>Please wait while we load your dashboard.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard-container">
+      <SessionDebug />
       {/* Header */}
       <div className="dashboard-header">
         <div className="dashboard-logo">

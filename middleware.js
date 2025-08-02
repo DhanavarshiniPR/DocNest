@@ -2,17 +2,32 @@ import { NextResponse } from 'next/server';
 
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
-  console.log('Middleware running for path:', pathname);
-
+  
   try {
+    console.log('Middleware running for path:', pathname);
+
     // Try to import NextAuth if available
-    const { getToken } = await import('next-auth/jwt');
+    let getToken;
+    try {
+      const nextAuth = await import('next-auth/jwt');
+      getToken = nextAuth.getToken;
+    } catch (error) {
+      console.log('NextAuth not available, allowing all requests');
+      return NextResponse.next();
+    }
     
     // Get the NextAuth token
-    const token = await getToken({ 
-      req: request, 
-      secret: process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || 'dev_secret_key' 
-    });
+    let token;
+    try {
+      token = await getToken({ 
+        req: request, 
+        secret: process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || 'dev_secret_key' 
+      });
+    } catch (error) {
+      console.log('Error getting token:', error);
+      // If there's an error getting the token, allow the request to continue
+      return NextResponse.next();
+    }
     
     console.log('Middleware token check:', { pathname, hasToken: !!token });
 
@@ -36,8 +51,9 @@ export async function middleware(request) {
       return NextResponse.next();
     }
   } catch (error) {
-    console.log('NextAuth not available, allowing all requests');
-    // If NextAuth is not available, just continue without authentication
+    console.error('Middleware error:', error);
+    // If there's any error in middleware, allow the request to continue
+    return NextResponse.next();
   }
 
   return NextResponse.next();
